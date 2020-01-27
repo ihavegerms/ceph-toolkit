@@ -12,7 +12,7 @@
   tasks:
       - name: Check if server has already been rebooted
         stat:
-          path: "{{ /ceph_rolling_rebooted }}"
+          path: "{{ reboot_marker }}"
         register: already_rebooted
 
       - name: set osd flags
@@ -52,8 +52,8 @@
         retries: "{{ health_osd_check_retries }}"
         delay: "{{ health_osd_check_delay }}"
         when:
-          - (ceph_pgs.stdout | from_json).pgmap.num_pgs != 0
           - already_rebooted.stat.exists == False
+          - (ceph_pgs.stdout | from_json).pgmap.num_pgs != 0
 
       - name: waiting for all mons online...
         command: "{{ docker_exec_cmd_update_osd|default('') }} ceph --cluster {{ cluster }} -s --format json"
@@ -73,5 +73,5 @@
   tasks:
       - name: Check if server has already been rebooted
         file:
-          path: "{{ /ceph_rolling_rebooted }}"
+          path: "{{ reboot_marker }}"
           state: absent
