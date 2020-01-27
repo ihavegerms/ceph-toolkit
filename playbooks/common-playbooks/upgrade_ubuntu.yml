@@ -45,7 +45,6 @@
         command: ceph --cluster {{ cluster }} osd set {{ item }}
         with_items:
           - noout
-          - norebalance
         delegate_to: "{{ groups[mon_group_name][0] }}"
 
       - name: Reboot the server.
