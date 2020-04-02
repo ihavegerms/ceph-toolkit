@@ -1,7 +1,7 @@
 #!/bin/bash
 
 UDEV_RULE_FILE="/etc/udev/rules.d/60-ssd-nonrotational.rules"
-
+echo "" > /etc/udev/rules.d/60-ssd-nonrotational.rules
 VENDOR="$(dmidecode |grep Vendor |awk '{print $2}')"
 
 # Dell
@@ -22,4 +22,25 @@ then
             fi
         fi
     done
+    
+#HP
+elif [ "${VENDOR}" = "HP" ]
+then
+    for ARRAY in $(ssacli ctrl slot=3 array all show | awk '/  Array / {print $2}');
+        do
+            BLKID=$(ssacli ctrl slot=3 array ${ARRAY} ld all show detail | awk '/Disk Name:/ {print $3}'| sed 's/dev\///')
+            for PDISK in $(ssacli ctrl slot=3 array ${ARRAY} pd all show | awk '/physicaldrive/ {print $2}');
+            do
+                MEDIA=$(ssacli ctrl slot=3 array ${ARRAY} pd all show | grep ${PDISK} | awk '{print $8}' | tr -d /,)
+                if [ "${MEDIA}" = "SSD" ]
+                then
+                    SCSIDEV=$(ls /sys/block/${BLKID}/device/scsi_device/)
+                    echo "# device ${BLKID} set rotational for SSD" >> ${UDEV_RULE_FILE}
+                    echo "ACTION==\"add|change\", SUBSYSTEM==\"block\", KERNELS==\"${SCSIDEV}\", ATTR{queue/rotational}=\"0\"" >> ${UDEV_RULE_FILE}
+                fi
+            done
+        done
+
+else
+echo "Vendor not supported"
 fi
