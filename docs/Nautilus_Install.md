@@ -217,6 +217,12 @@ ansible -i ceph_inventory.yaml all -m shell -a 'bash /root/ssd_rotational_fix.sh
 
 ```
 
+### Reboot the node so udev rules take
+
+``` <bash>
+reboot & exit
+```
+
 ### Verify Networking
 
 Ensure all nodes can ping deployment node via frontend storage network:
