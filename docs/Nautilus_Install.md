@@ -202,6 +202,12 @@ all:
         Charmander:
         Pikachu:
         Eevee:
+    grafana-server:
+      hosts:
+        Bulbasaur:
+        Squirtle:
+        Charmander:
+        
 ```
 
 #### Confirm that all servers report the correct drive type. Fix those that do not report correctly
@@ -248,7 +254,14 @@ cp /opt/ceph-toolkit/defaults/nfss.default.yml /opt/ceph-ansible/group_vars/nfss
 cp /opt/ceph-toolkit/defaults/rgws.default.yml /opt/ceph-ansible/group_vars/rgws.yml
 ```
 
-### Fill in the info in all.yml and osds.yml. Read the instructions in each file
+### Fill in the info in all.yml,osds.yml and rgws.yml. Read the instructions in each file
+
+Come up with a secure password for these two values in all.yml
+
+``` <text>
+dashboard_admin_password
+grafana_admin_password
+```
 
 ### Run site.yml to deploy Ceph
 

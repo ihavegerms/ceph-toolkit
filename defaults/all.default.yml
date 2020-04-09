@@ -165,7 +165,8 @@ openstack_keys:
 #  - "{{ cephfs_data_pool }}"
 #  - "{{ cephfs_metadata_pool }}"
 
-
+dashboard_admin_password: <PASSWORD>
+grafana_admin_password: <DIFFERENT_PASSWORD>
 
 # Tuning Defaults DO NOT CHANGE WITHOUT CONSULTING RPC-STORAGE
 
