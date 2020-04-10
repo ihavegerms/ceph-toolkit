@@ -9,6 +9,8 @@
 ntp_service_enabled: true
 ntp_daemon_type: chronyd
 
+copy_admin_key: true
+
 ceph_release_num:
   dumpling: 0.67
   emperor: 0.72

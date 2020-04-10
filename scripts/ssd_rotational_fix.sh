@@ -27,22 +27,20 @@ then
     done
     
 #HP
-elif [ "${VENDOR}" = "HP" ]
+elif [ "${VENDOR}" = "HP" ] || [ "${VENDOR}" = "HPE" ]
 then
-    for slot in $(ssacli ctrl all show config | sed -n '/.*rray.*in Slot/{s/.*in Slot \([^ ]\{1,\}\).*/\1/;p;}'))
-        for ARRAY in $($ssacli ctrl slot=$slot array all show | awk '/  Array / {print $2}');
+    for ARRAY in $($ssacli ctrl slot=3 array all show | awk '/  Array / {print $2}');
+        do
+            BLKID=$($ssacli ctrl slot=3 array ${ARRAY} ld all show detail | awk '/Disk Name:/ {print $3}'| sed 's/dev\///')
+            for PDISK in $($ssacli ctrl slot=3 array ${ARRAY} pd all show | awk '/physicaldrive/ {print $2}');
             do
-                BLKID=$($ssacli ctrl slot=$slot array ${ARRAY} ld all show detail | awk '/Disk Name:/ {print $3}'| sed 's/dev\///')
-                for PDISK in $($ssacli ctrl slot=3 array ${ARRAY} pd all show | awk '/physicaldrive/ {print $2}');
-                do
-                    MEDIA=$($ssacli ctrl slot=$slot array ${ARRAY} pd all show | grep ${PDISK} | awk '{print $8}' | tr -d /,)
-                    if [ "${MEDIA}" = "SSD" ]
-                    then
-                        SCSIDEV=$(ls /sys/block/${BLKID}/device/scsi_device/)
-                        echo "# device ${BLKID} set rotational for SSD" >> ${UDEV_RULE_FILE}
-                        echo "ACTION==\"add|change\", SUBSYSTEM==\"block\", KERNELS==\"${SCSIDEV}\", ATTR{queue/rotational}=\"0\"" >> ${UDEV_RULE_FILE}
-                    fi
-                done
+                MEDIA=$($ssacli ctrl slot=3 array ${ARRAY} pd all show | grep ${PDISK} | awk '{print $8}' | tr -d /,)
+                if [ "${MEDIA}" = "SSD" ]
+                then
+                    SCSIDEV=$(ls /sys/block/${BLKID}/device/scsi_device/)
+                    echo "# device ${BLKID} set rotational for SSD" >> ${UDEV_RULE_FILE}
+                    echo "ACTION==\"add|change\", SUBSYSTEM==\"block\", KERNELS==\"${SCSIDEV}\", ATTR{queue/rotational}=\"0\"" >> ${UDEV_RULE_FILE}
+                fi
             done
         done
     done
