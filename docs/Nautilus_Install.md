@@ -234,13 +234,13 @@ reboot & exit
 Ensure all nodes can ping deployment node via frontend storage network:
 
 ``` <bash>
-ansible -i env_inventory all -m shell -a 'ping -M do -s 8972 -c 3 DEPLOYMENT_STORAGE_IP'
+ansible -i ceph_inventory.yaml all -m shell -a 'ping -M do -s 8972 -c 3 DEPLOYMENT_STORAGE_IP'
 ```
 
 Ensure all nodes can ping deployment node via backend replication network:
 
 ``` <bash>
-ansible -i env_inventory all -m shell -a 'ping -M do -s 8972 -c 3 DEPLOYMENT_REPL_IP'
+ansible -i ceph_inventory.yaml all -m shell -a 'ping -M do -s 8972 -c 3 DEPLOYMENT_REPL_IP'
 ```
 
 ### Copy the premade files from the toolkit to ceph-ansible
@@ -267,7 +267,7 @@ grafana_admin_password
 
 ``` <bash>
 cd /opt/ceph-ansible
-cp site.yml.sample site.yml
+ln -s site.yml.sample site.yml
 ansible-playbook -i ceph_inventory.yaml site.yml
 ```
 
