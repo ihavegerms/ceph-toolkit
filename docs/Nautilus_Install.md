@@ -265,13 +265,7 @@ grafana_admin_password
 
 ### Run site.yml to deploy Ceph
 
-``` <bash>
-cd /opt/ceph-ansible
-ln -s site.yml.sample site.yml
-ansible-playbook -i ceph_inventory.yaml site.yml
-```
-
-Fill in the info in all.yml and osds.yml. Read the instructions in each file
+Fill in the info in all.yml, osds.yml, and rgws.yml (if deploying rgw). Read the instructions in each file
 
 ### Run site.yml to deploy Ceph
 
